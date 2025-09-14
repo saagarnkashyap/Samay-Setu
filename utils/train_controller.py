@@ -38,7 +38,7 @@ class TrainController:
         # Find problematic trains
         delayed_trains = [t for t in trains if t['status'] == 'Delayed']
         waiting_trains = [t for t in trains if t['status'] == 'Waiting']
-        express_trains = [t for t in trains if t['type'] == 'Express']
+        express_trains = [t for t in trains if t['type'] in ['Rajdhani Express', 'Shatabdi Express', 'Vande Bharat', 'Duronto Express']]
         
         # Generate recommendations based on current situation
         if delayed_trains:
@@ -46,7 +46,7 @@ class TrainController:
             recommendations.append({
                 'action': f'Reroute {train["train_id"]} via alternative track to reduce delay',
                 'reason': f'Train is delayed by {train["delay_minutes"]} minutes',
-                'priority': 'High' if train['type'] == 'Express' else 'Medium'
+                'priority': 'High' if train['type'] in ['Rajdhani Express', 'Shatabdi Express', 'Vande Bharat', 'Duronto Express'] else 'Medium'
             })
         
         if waiting_trains:
@@ -60,27 +60,37 @@ class TrainController:
         if express_trains:
             train = random.choice(express_trains)
             recommendations.append({
-                'action': f'Give priority clearance to {train["train_id"]} on Track B-C',
-                'reason': 'Express train approaching congested section',
+                'action': f'Give priority clearance to {train["train_id"]} ({train.get("train_name", "Express")}) on congested route',
+                'reason': 'Premium train approaching congested section',
                 'priority': 'High'
             })
         
         # Always provide some general recommendations
         general_recommendations = [
             {
-                'action': 'Reduce speed limit on Track B-C to 60 km/h',
+                'action': 'Reduce speed limit on Mumbai-Chennai route to 80 km/h',
                 'reason': 'High traffic density detected in this section',
                 'priority': 'Medium'
             },
             {
-                'action': 'Prepare Platform 3 at Station C for express arrival',
+                'action': 'Prepare Platform 1 at Chennai Central for Rajdhani arrival',
                 'reason': 'Multiple express trains scheduled within next hour',
                 'priority': 'Low'
             },
             {
                 'action': 'Alert passengers about potential delays on Freight routes',
-                'reason': 'Weather conditions may affect freight operations',
+                'reason': 'Monsoon conditions may affect freight operations',
                 'priority': 'Low'
+            },
+            {
+                'action': 'Clear Platform 3 at Vijayawada for MEMU arrival',
+                'reason': 'Local train approaching with high passenger load',
+                'priority': 'Medium'
+            },
+            {
+                'action': 'Coordinate with Hyderabad station for Vande Bharat priority',
+                'reason': 'Premium train requires special handling',
+                'priority': 'High'
             }
         ]
         

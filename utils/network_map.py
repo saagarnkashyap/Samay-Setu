@@ -11,25 +11,57 @@ class NetworkMap:
         self.tracks = self._define_tracks()
     
     def _define_stations(self) -> Dict[str, Dict[str, float]]:
-        """Define station positions"""
+        """Define Indian railway station positions with focus on South India"""
         return {
-            'Station A': {'lat': 40.05, 'lon': -74.05},
-            'Station B': {'lat': 40.08, 'lon': -74.02},
-            'Station C': {'lat': 40.12, 'lon': -74.00},
-            'Station D': {'lat': 40.15, 'lon': -73.97},
-            'Station E': {'lat': 40.18, 'lon': -73.94},
-            'Station F': {'lat': 40.21, 'lon': -73.91}
+            'New Delhi': {'lat': 28.6139, 'lon': 77.2090},
+            'Mumbai Central': {'lat': 19.0176, 'lon': 72.8562},
+            'Chennai Central': {'lat': 13.0827, 'lon': 80.2707},
+            'Kolkata': {'lat': 22.5726, 'lon': 88.3639},
+            'Bangalore City': {'lat': 12.9716, 'lon': 77.5946},
+            'Hyderabad': {'lat': 17.3850, 'lon': 78.4867},
+            'Vijayawada': {'lat': 16.5062, 'lon': 80.6480},
+            'Visakhapatnam': {'lat': 17.6868, 'lon': 83.2185},
+            'Tirupati': {'lat': 13.6288, 'lon': 79.4192},
+            'Guntur': {'lat': 16.3067, 'lon': 80.4365},
+            'Rajahmundry': {'lat': 17.0005, 'lon': 81.8044},
+            'Kurnool': {'lat': 15.8309, 'lon': 78.0422},
+            'Nellore': {'lat': 14.4426, 'lon': 79.9864},
+            'Kadapa': {'lat': 14.4753, 'lon': 78.8252},
+            'Anantapur': {'lat': 14.6819, 'lon': 77.6006}
         }
     
     def _define_tracks(self) -> List[Dict[str, Any]]:
-        """Define track segments between stations"""
+        """Define track segments between Indian railway stations"""
         return [
-            {'from': 'Station A', 'to': 'Station B', 'status': 'normal'},
-            {'from': 'Station B', 'to': 'Station C', 'status': 'congested'},
-            {'from': 'Station C', 'to': 'Station D', 'status': 'normal'},
-            {'from': 'Station D', 'to': 'Station E', 'status': 'normal'},
-            {'from': 'Station E', 'to': 'Station F', 'status': 'maintenance'},
-            {'from': 'Station A', 'to': 'Station C', 'status': 'normal'},  # Alternative route
+            # Major routes
+            {'from': 'New Delhi', 'to': 'Mumbai Central', 'status': 'normal'},
+            {'from': 'Mumbai Central', 'to': 'Chennai Central', 'status': 'congested'},
+            {'from': 'Chennai Central', 'to': 'Kolkata', 'status': 'normal'},
+            {'from': 'Kolkata', 'to': 'Bangalore City', 'status': 'normal'},
+            {'from': 'Bangalore City', 'to': 'Hyderabad', 'status': 'maintenance'},
+            
+            # Andhra Pradesh network
+            {'from': 'Hyderabad', 'to': 'Vijayawada', 'status': 'normal'},
+            {'from': 'Vijayawada', 'to': 'Visakhapatnam', 'status': 'normal'},
+            {'from': 'Vijayawada', 'to': 'Guntur', 'status': 'normal'},
+            {'from': 'Guntur', 'to': 'Rajahmundry', 'status': 'normal'},
+            {'from': 'Rajahmundry', 'to': 'Visakhapatnam', 'status': 'normal'},
+            
+            # South India connections
+            {'from': 'Bangalore City', 'to': 'Tirupati', 'status': 'normal'},
+            {'from': 'Tirupati', 'to': 'Chennai Central', 'status': 'normal'},
+            {'from': 'Tirupati', 'to': 'Nellore', 'status': 'normal'},
+            {'from': 'Nellore', 'to': 'Chennai Central', 'status': 'normal'},
+            
+            # Rayalaseema region
+            {'from': 'Bangalore City', 'to': 'Kurnool', 'status': 'normal'},
+            {'from': 'Kurnool', 'to': 'Anantapur', 'status': 'normal'},
+            {'from': 'Anantapur', 'to': 'Kadapa', 'status': 'normal'},
+            {'from': 'Kadapa', 'to': 'Tirupati', 'status': 'normal'},
+            
+            # Alternative routes
+            {'from': 'New Delhi', 'to': 'Chennai Central', 'status': 'normal'},
+            {'from': 'Hyderabad', 'to': 'Bangalore City', 'status': 'normal'},
         ]
     
     def create_network_figure(self, trains: List[Dict[str, Any]]) -> go.Figure:
@@ -45,15 +77,15 @@ class NetworkMap:
         # Add trains
         self._add_trains_to_figure(fig, trains)
         
-        # Configure layout
+        # Configure layout for India
         fig.update_layout(
-            title="Railway Network Status",
+            title="Indian Railway Network Status",
             showlegend=True,
             height=500,
             mapbox=dict(
                 style="open-street-map",
-                center=dict(lat=40.13, lon=-73.98),
-                zoom=11
+                center=dict(lat=20.0, lon=77.0),  # Center of India
+                zoom=5
             ),
             margin=dict(l=0, r=0, t=30, b=0)
         )

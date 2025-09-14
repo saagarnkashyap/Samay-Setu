@@ -1,0 +1,91 @@
+Person A – Problem Modeling
+
+List constraints (track capacity, signalling, train priorities, platform availability).
+
+Write them in plain English first.
+
+Convert into simple mathematical rules (e.g., two trains cannot occupy the same track segment at the same time).
+
+Share a “Constraints Document” with Person C (Optimization) & Person D (Simulation).
+
+Stay available to refine rules when algo/simulation team has doubts.
+
+Person B – Data Engineering
+
+Collect or create mock schedule dataset (CSV with: train_id, type, priority, arrival_time, departure_time, section).
+
+Write Python script to simulate real-time data feed (e.g., every 5 seconds output next train’s status, sometimes insert random delays).
+
+Share schema (what each field means) with C, D, E.
+
+Add a script that can inject “events” (delay, breakdown).
+
+Keep updating dataset as needed for testing.
+
+Person C – Optimization Algorithm
+
+Install OR-Tools or Pyomo in Python.
+
+Start with a toy problem (2–3 trains on 1 track).
+
+Implement a basic precedence decision:
+
+If two trains want the same track, choose based on priority (express > passenger > freight).
+
+Gradually add constraints from Person A.
+
+Write output in JSON (decision: train X goes first, train Y waits 5 min).
+
+Share JSON schema with D (Simulation) & E (UI).
+
+Person D – Simulation
+
+Install SimPy (Python).
+
+Build a simple simulator: trains move along track segments with travel times.
+
+Accept algorithm’s output (from C) as input.
+
+Run “what-if” scenarios (e.g., if algorithm holds Train A, see delay propagation).
+
+Output logs/metrics (delays, throughput).
+
+Share results with UI team for visualization.
+
+Person E – UI/Dashboard
+
+Set up Streamlit (simplest) or Dash app.
+
+Create 3 panels with dummy data:
+
+Train list with status (on time / delayed / waiting).
+
+Network map (static layout with tracks & stations).
+
+Metrics panel (avg delay, throughput).
+
+Replace dummy data with real API calls once B, C, D outputs are ready.
+
+Add buttons for “simulate delay” or “inject disruption”.
+
+Polish for demo day (charts, colors, KPIs).
+
+Person F – Integration/DevOps
+
+Create GitHub repo with folders: /data, /algorithm, /simulation, /ui.
+
+Set up Docker environment (Python base image + required libs).
+
+Write FastAPI service with endpoints:
+
+/data → live train feed (from B).
+
+/optimize → decisions (from C).
+
+/simulate → results (from D).
+
+Connect services using JSON input/output.
+
+Maintain CI/CD so all pushes are tested in the container.
+
+Support others when they need help connecting.

@@ -11,7 +11,7 @@ from utils.train_controller import TrainController
 
 # Page configuration
 st.set_page_config(
-    page_title="Railway Traffic Controller Dashboard",
+    page_title="Indian Railway Traffic Controller Dashboard",
     page_icon="🚆",
     layout="wide",
     initial_sidebar_state="collapsed"
@@ -47,32 +47,42 @@ def update_real_time_data():
             st.session_state.metrics_history = st.session_state.metrics_history[-20:]
 
 def create_top_bar():
-    """Create the top bar with title, clock, and control buttons"""
-    col1, col2, col3 = st.columns([2, 2, 1])
+    """Create the top bar with centered title, time, and control buttons"""
+    # Centered main heading
+    st.markdown("<h1 style='text-align: center; margin-bottom: 10px;'>🚆 Indian Railway Traffic Decision Support</h1>", unsafe_allow_html=True)
+    
+    # Time directly below the heading - centered
+    current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    st.markdown(f"<h3 style='text-align: center; margin-bottom: 20px;'>🕐 {current_time}</h3>", unsafe_allow_html=True)
+    
+    # Controls section - centered with proper spacing
+    st.markdown("<h3 style='text-align: center; margin-bottom: 20px;'>🎛️ System Controls</h3>", unsafe_allow_html=True)
+    
+    # Create a centered container for controls
+    col1, col2, col3, col4, col5 = st.columns([1, 1, 1, 1, 1])
     
     with col1:
-        st.title("🚆 Railway Traffic Decision Support")
+        st.markdown("")  # Empty space
     
     with col2:
-        # Real-time clock
-        current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        st.markdown(f"### 🕐 {current_time}")
-    
-    with col3:
-        st.markdown("### Controls")
-        if st.button("🚧 Inject Delay", type="secondary"):
+        if st.button("🚧 Inject Delay", type="secondary", use_container_width=True):
             st.session_state.train_controller.inject_delay(st.session_state.train_generator.trains)
             st.success("Delay injected to random train!")
-        
-        if st.button("⚠️ Simulate Breakdown", type="secondary"):
+    
+    with col3:
+        if st.button("⚠️ Simulate Breakdown", type="secondary", use_container_width=True):
             st.session_state.train_controller.simulate_breakdown(st.session_state.train_generator.trains)
             st.error("Breakdown simulated!")
-        
-        if st.button("🔄 Reset System", type="primary"):
+    
+    with col4:
+        if st.button("🔄 Reset System", type="primary", use_container_width=True):
             st.session_state.train_generator = TrainDataGenerator()
             st.session_state.decisions_log = []
             st.session_state.metrics_history = []
             st.success("System reset!")
+    
+    with col5:
+        st.markdown("")  # Empty space
 
 def create_train_list_panel():
     """Create the left panel with train list"""
@@ -107,8 +117,8 @@ def create_train_list_panel():
         }
         return color_map.get(val, '')
     
-    styled_df = filtered_df.style.applymap(color_status, subset=['Status'])
-    st.dataframe(styled_df, use_container_width=True, height=400)
+    styled_df = filtered_df.style.map(color_status, subset=['Status'])
+    st.dataframe(styled_df, height=400)
     
     # Train summary
     st.markdown("### 📊 Summary")
@@ -131,20 +141,20 @@ def create_network_map_panel():
         st.session_state.train_generator.trains
     )
     
-    st.plotly_chart(network_fig, use_container_width=True, height=500)
+    st.plotly_chart(network_fig, height=500)
     
     # Network status indicators
     st.markdown("### 🚦 Track Status")
     col1, col2, col3 = st.columns(3)
     with col1:
         st.markdown("🟢 **Normal Operations**")
-        st.text("Tracks A-B, C-D")
+        st.text("Delhi-Mumbai, Chennai-Kolkata")
     with col2:
         st.markdown("🟡 **Congested**")
-        st.text("Track B-C")
+        st.text("Mumbai-Chennai route")
     with col3:
         st.markdown("🔴 **Maintenance**")
-        st.text("Track E-F")
+        st.text("Bangalore-Hyderabad route")
 
 def create_metrics_panel():
     """Create the right panel with metrics and recommendations"""
@@ -197,38 +207,7 @@ def create_metrics_panel():
             margin=dict(l=0, r=0, t=0, b=0)
         )
         
-        st.plotly_chart(fig, use_container_width=True)
-    
-    # Recommendations panel
-    st.markdown("### 🤖 AI Recommendations")
-    
-    recommendations = st.session_state.train_controller.generate_recommendations(
-        st.session_state.train_generator.trains
-    )
-    
-    for i, rec in enumerate(recommendations[:3]):
-        with st.expander(f"Recommendation {i+1}", expanded=i==0):
-            st.markdown(f"**Action:** {rec['action']}")
-            st.markdown(f"**Reason:** {rec['reason']}")
-            st.markdown(f"**Priority:** {rec['priority']}")
-            
-            col1, col2 = st.columns(2)
-            with col1:
-                if st.button(f"✅ Apply", key=f"apply_{i}"):
-                    st.session_state.decisions_log.append({
-                        'timestamp': datetime.now(),
-                        'action': rec['action'],
-                        'status': 'Applied'
-                    })
-                    st.success("Recommendation applied!")
-            with col2:
-                if st.button(f"❌ Dismiss", key=f"dismiss_{i}"):
-                    st.session_state.decisions_log.append({
-                        'timestamp': datetime.now(),
-                        'action': rec['action'],
-                        'status': 'Dismissed'
-                    })
-                    st.info("Recommendation dismissed!")
+        st.plotly_chart(fig)
     
     # Decision log
     st.markdown("### 📋 Recent Decisions")
@@ -264,6 +243,130 @@ def main():
     
     with col3:
         create_metrics_panel()
+    
+    # Add spacing before AI recommendations
+    st.markdown("<br><br>", unsafe_allow_html=True)
+    
+    # AI Recommendations spanning full width
+    st.markdown("<h2 style='text-align: center; margin-bottom: 30px;'>🤖 AI Recommendations</h2>", unsafe_allow_html=True)
+    
+    recommendations = st.session_state.train_controller.generate_recommendations(
+        st.session_state.train_generator.trains
+    )
+    
+    # Full-width 3-column layout for recommendations
+    rec_col1, rec_col2, rec_col3 = st.columns(3, gap="large")
+    
+    with rec_col1:
+        if len(recommendations) > 0:
+            rec = recommendations[0]
+            st.markdown("""
+            <div style="
+                background-color: #f8f9fa;
+                padding: 25px;
+                border-radius: 15px;
+                border-left: 5px solid #007bff;
+                box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+                margin-bottom: 20px;
+            ">
+            """, unsafe_allow_html=True)
+            
+            st.markdown(f"<h4 style='color: #007bff; margin-bottom: 15px;'>🎯 Recommendation 1</h4>", unsafe_allow_html=True)
+            st.markdown(f"**Action:** {rec['action']}")
+            st.markdown(f"**Reason:** {rec['reason']}")
+            st.markdown(f"**Priority:** {rec['priority']}")
+            
+            st.markdown("</div>", unsafe_allow_html=True)
+            
+            if st.button("✅ Apply Recommendation", key="apply_1", use_container_width=True, type="primary"):
+                st.session_state.decisions_log.append({
+                    'timestamp': datetime.now(),
+                    'action': rec['action'],
+                    'status': 'Applied'
+                })
+                st.success("Recommendation Applied!")
+            
+            if st.button("❌ Dismiss", key="dismiss_1", use_container_width=True):
+                st.session_state.decisions_log.append({
+                    'timestamp': datetime.now(),
+                    'action': rec['action'],
+                    'status': 'Dismissed'
+                })
+                st.info("Recommendation Dismissed!")
+    
+    with rec_col2:
+        if len(recommendations) > 1:
+            rec = recommendations[1]
+            st.markdown("""
+            <div style="
+                background-color: #f8f9fa;
+                padding: 25px;
+                border-radius: 15px;
+                border-left: 5px solid #28a745;
+                box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+                margin-bottom: 20px;
+            ">
+            """, unsafe_allow_html=True)
+            
+            st.markdown(f"<h4 style='color: #28a745; margin-bottom: 15px;'>🎯 Recommendation 2</h4>", unsafe_allow_html=True)
+            st.markdown(f"**Action:** {rec['action']}")
+            st.markdown(f"**Reason:** {rec['reason']}")
+            st.markdown(f"**Priority:** {rec['priority']}")
+            
+            st.markdown("</div>", unsafe_allow_html=True)
+            
+            if st.button("✅ Apply Recommendation", key="apply_2", use_container_width=True, type="primary"):
+                st.session_state.decisions_log.append({
+                    'timestamp': datetime.now(),
+                    'action': rec['action'],
+                    'status': 'Applied'
+                })
+                st.success("Recommendation Applied!")
+            
+            if st.button("❌ Dismiss", key="dismiss_2", use_container_width=True):
+                st.session_state.decisions_log.append({
+                    'timestamp': datetime.now(),
+                    'action': rec['action'],
+                    'status': 'Dismissed'
+                })
+                st.info("Recommendation Dismissed!")
+    
+    with rec_col3:
+        if len(recommendations) > 2:
+            rec = recommendations[2]
+            st.markdown("""
+            <div style="
+                background-color: #f8f9fa;
+                padding: 25px;
+                border-radius: 15px;
+                border-left: 5px solid #ffc107;
+                box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+                margin-bottom: 20px;
+            ">
+            """, unsafe_allow_html=True)
+            
+            st.markdown(f"<h4 style='color: #ffc107; margin-bottom: 15px;'>🎯 Recommendation 3</h4>", unsafe_allow_html=True)
+            st.markdown(f"**Action:** {rec['action']}")
+            st.markdown(f"**Reason:** {rec['reason']}")
+            st.markdown(f"**Priority:** {rec['priority']}")
+            
+            st.markdown("</div>", unsafe_allow_html=True)
+            
+            if st.button("✅ Apply Recommendation", key="apply_3", use_container_width=True, type="primary"):
+                st.session_state.decisions_log.append({
+                    'timestamp': datetime.now(),
+                    'action': rec['action'],
+                    'status': 'Applied'
+                })
+                st.success("Recommendation Applied!")
+            
+            if st.button("❌ Dismiss", key="dismiss_3", use_container_width=True):
+                st.session_state.decisions_log.append({
+                    'timestamp': datetime.now(),
+                    'action': rec['action'],
+                    'status': 'Dismissed'
+                })
+                st.info("Recommendation Dismissed!")
     
     # Auto-refresh every 3 seconds
     time.sleep(1)
