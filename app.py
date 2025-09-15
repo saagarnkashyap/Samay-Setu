@@ -38,15 +38,20 @@ if "metrics_history" not in st.session_state:
 
 # -------------------------------
 # Update Real-Time Data
-# -------------------------------
 def update_real_time_data():
     """Update real-time data if enough time has passed"""
     current_time = datetime.now(ZoneInfo("Asia/Kolkata"))
 
-    # ensure last_update is set
+    # Fix: Ensure last_update is datetime
     if "last_update" not in st.session_state or st.session_state.last_update is None:
         st.session_state.last_update = current_time
+    elif isinstance(st.session_state.last_update, str):
+        try:
+            st.session_state.last_update = datetime.fromisoformat(st.session_state.last_update)
+        except Exception:
+            st.session_state.last_update = current_time
 
+    # Now subtraction is always safe
     if current_time - st.session_state.last_update > timedelta(seconds=3):
         st.session_state.train_generator.update_trains()
         st.session_state.last_update = current_time
@@ -60,7 +65,7 @@ def update_real_time_data():
             "metrics": metrics
         })
 
-        # Keep only last 20 entries
+        # Keep only last 20
         if len(st.session_state.metrics_history) > 20:
             st.session_state.metrics_history = st.session_state.metrics_history[-20:]
 
