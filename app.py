@@ -16,6 +16,11 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="collapsed"
 )
+from datetime import datetime
+from zoneinfo import ZoneInfo
+
+if "last_update" not in st.session_state:
+    st.session_state.last_update = datetime.now(ZoneInfo("Asia/Kolkata"))
 
 # Initialize session state
 if 'train_generator' not in st.session_state:
