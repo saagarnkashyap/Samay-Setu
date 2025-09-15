@@ -16,11 +16,6 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="collapsed"
 )
-from datetime import datetime
-from zoneinfo import ZoneInfo
-
-if "last_update" not in st.session_state:
-    st.session_state.last_update = datetime.now(ZoneInfo("Asia/Kolkata"))
 
 # Initialize session state
 if 'train_generator' not in st.session_state:
@@ -31,13 +26,9 @@ if 'train_generator' not in st.session_state:
     st.session_state.decisions_log = []
     st.session_state.metrics_history = []
 
-from datetime import datetime, timedelta
-from zoneinfo import ZoneInfo
-
 def update_real_time_data():
     """Update real-time data if enough time has passed"""
-    current_time = datetime.now
-    
+    current_time = datetime.now()
     if current_time - st.session_state.last_update > timedelta(seconds=3):
         st.session_state.train_generator.update_trains()
         st.session_state.last_update = current_time
@@ -47,15 +38,13 @@ def update_real_time_data():
             st.session_state.train_generator.trains
         )
         st.session_state.metrics_history.append({
-            'timestamp': current_time.strftime("%H:%M:%S"),
+            'timestamp': current_time,
             'metrics': metrics
         })
         
-        # Keep only last 20 entries
+        # Keep only last 20 entries for performance
         if len(st.session_state.metrics_history) > 20:
             st.session_state.metrics_history = st.session_state.metrics_history[-20:]
-
-
 
 def create_top_bar():
     """Create the top bar with centered title, time, and control buttons"""
