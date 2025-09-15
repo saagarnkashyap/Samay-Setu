@@ -1,16 +1,27 @@
 from datetime import datetime, timedelta
 from zoneinfo import ZoneInfo
-import streamlit as st
+import streamlit import streamlit as st
 import pandas as pd
 import plotly.graph_objects as go
-import plotly.express as px
 from datetime import datetime, timedelta
+from zoneinfo import ZoneInfo
 import time
 import random
+
+# Import your utils
 from utils.data_generator import TrainDataGenerator
 from utils.network_map import NetworkMap
 from utils.train_controller import TrainController
 
+# Page configuration
+st.set_page_config(
+    page_title="Indian Railway Traffic Controller Dashboard",
+    page_icon="🚆",
+    layout="wide",
+    initial_sidebar_state="collapsed"
+)
+
+# -------------------------------
 # Session State Initialization
 # -------------------------------
 if "train_generator" not in st.session_state:
@@ -82,9 +93,8 @@ def create_top_bar():
             st.session_state.decisions_log = []
             st.session_state.metrics_history = []
             st.success("System reset!")
-    
-    with col5:
-        st.markdown("")  # Empty space
+
+
 
 def create_train_list_panel():
     """Create the left panel with train list"""
