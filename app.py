@@ -11,79 +11,71 @@ from utils.data_generator import TrainDataGenerator
 from utils.network_map import NetworkMap
 from utils.train_controller import TrainController
 
-# Page configuration
-st.set_page_config(
-    page_title="Indian Railway Traffic Controller Dashboard",
-    page_icon="🚆",
-    layout="wide",
-    initial_sidebar_state="collapsed"
-)
-
-# Initialize session state
-if 'train_generator' not in st.session_state:
+# Session State Initialization
+# -------------------------------
+if "train_generator" not in st.session_state:
     st.session_state.train_generator = TrainDataGenerator()
+if "network_map" not in st.session_state:
     st.session_state.network_map = NetworkMap()
+if "train_controller" not in st.session_state:
     st.session_state.train_controller = TrainController()
-    st.session_state.last_update = datetime.now(ZoneInfo("Asia/Kolkata"))
-    st.session_state.decisions_log = []
-    st.session_state.metrics_history = []
-
-from datetime import datetime, timedelta
-from zoneinfo import ZoneInfo
-
-# Initialize session state defaults
 if "last_update" not in st.session_state:
     st.session_state.last_update = datetime.now(ZoneInfo("Asia/Kolkata"))
+if "decisions_log" not in st.session_state:
+    st.session_state.decisions_log = []
 if "metrics_history" not in st.session_state:
     st.session_state.metrics_history = []
+
+
+# -------------------------------
+# Update Real-Time Data
+# -------------------------------
 def update_real_time_data():
     """Update real-time data if enough time has passed"""
     current_time = datetime.now(ZoneInfo("Asia/Kolkata"))
+
+    # ensure last_update is set
+    if "last_update" not in st.session_state or st.session_state.last_update is None:
+        st.session_state.last_update = current_time
+
     if current_time - st.session_state.last_update > timedelta(seconds=3):
         st.session_state.train_generator.update_trains()
         st.session_state.last_update = current_time
-        
+
         # Update metrics history
         metrics = st.session_state.train_controller.calculate_metrics(
             st.session_state.train_generator.trains
         )
         st.session_state.metrics_history.append({
-            'timestamp': current_time,
-            'metrics': metrics
+            "timestamp": current_time,
+            "metrics": metrics
         })
-        
-        # Keep only last 20 entries for performance
+
+        # Keep only last 20 entries
         if len(st.session_state.metrics_history) > 20:
             st.session_state.metrics_history = st.session_state.metrics_history[-20:]
 
+
+# -------------------------------
+# Top Bar
+# -------------------------------
 def create_top_bar():
-    """Create the top bar with centered title, time, and control buttons"""
-    # Centered main heading
     st.markdown("<h1 style='text-align: center; margin-bottom: 10px;'>🚆 Indian Railway Traffic Decision Support</h1>", unsafe_allow_html=True)
-    
-    # Time directly below the heading - centered
-    current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+    current_time = datetime.now(ZoneInfo("Asia/Kolkata")).strftime("%Y-%m-%d %H:%M:%S")
     st.markdown(f"<h3 style='text-align: center; margin-bottom: 20px;'>🕐 {current_time}</h3>", unsafe_allow_html=True)
-    
-    # Controls section - centered with proper spacing
+
     st.markdown("<h3 style='text-align: center; margin-bottom: 20px;'>🎛️ System Controls</h3>", unsafe_allow_html=True)
-    
-    # Create a centered container for controls
+
     col1, col2, col3, col4, col5 = st.columns([1, 1, 1, 1, 1])
-    
-    with col1:
-        st.markdown("")  # Empty space
-    
     with col2:
-        if st.button("🚧 Inject Delay", type="secondary", use_container_width=True):
+        if st.button("🚧 Inject Delay", use_container_width=True):
             st.session_state.train_controller.inject_delay(st.session_state.train_generator.trains)
             st.success("Delay injected to random train!")
-    
     with col3:
-        if st.button("⚠️ Simulate Breakdown", type="secondary", use_container_width=True):
+        if st.button("⚠️ Simulate Breakdown", use_container_width=True):
             st.session_state.train_controller.simulate_breakdown(st.session_state.train_generator.trains)
             st.error("Breakdown simulated!")
-    
     with col4:
         if st.button("🔄 Reset System", type="primary", use_container_width=True):
             st.session_state.train_generator = TrainDataGenerator()
