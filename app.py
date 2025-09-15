@@ -28,6 +28,14 @@ if 'train_generator' not in st.session_state:
     st.session_state.decisions_log = []
     st.session_state.metrics_history = []
 
+from datetime import datetime, timedelta
+from zoneinfo import ZoneInfo
+
+# Initialize session state defaults
+if "last_update" not in st.session_state:
+    st.session_state.last_update = datetime.now(ZoneInfo("Asia/Kolkata"))
+if "metrics_history" not in st.session_state:
+    st.session_state.metrics_history = []
 def update_real_time_data():
     """Update real-time data if enough time has passed"""
     current_time = datetime.now(ZoneInfo("Asia/Kolkata"))
