@@ -71,23 +71,23 @@ def create_top_bar():
     current_time = datetime.now(ZoneInfo("Asia/Kolkata")).strftime("%Y-%m-%d %H:%M:%S")
     st.markdown(f"<h3 style='text-align: center; margin-bottom: 20px;'>🕐 {current_time}</h3>", unsafe_allow_html=True)
 
-    st.markdown("<h3 style='text-align: center; margin-bottom: 20px;'>🎛️ System Controls</h3>", unsafe_allow_html=True)
+    # st.markdown("<h3 style='text-align: center; margin-bottom: 20px;'>🎛️ System Controls</h3>", unsafe_allow_html=True)
 
-    col1, col2, col3, col4, col5 = st.columns([1, 1, 1, 1, 1])
-    with col2:
-        if st.button("🚧 Inject Delay", use_container_width=True):
-            st.session_state.train_controller.inject_delay(st.session_state.train_generator.trains)
-            st.success("Delay injected to random train!")
-    with col3:
-        if st.button("⚠️ Simulate Breakdown", use_container_width=True):
-            st.session_state.train_controller.simulate_breakdown(st.session_state.train_generator.trains)
-            st.error("Breakdown simulated!")
-    with col4:
-        if st.button("🔄 Reset System", type="primary", use_container_width=True):
-            st.session_state.train_generator = TrainDataGenerator()
-            st.session_state.decisions_log = []
-            st.session_state.metrics_history = []
-            st.success("System reset!")
+    # col1, col2, col3, col4, col5 = st.columns([1, 1, 1, 1, 1])
+    # with col2:
+    #     if st.button("🚧 Inject Delay", use_container_width=True):
+    #         st.session_state.train_controller.inject_delay(st.session_state.train_generator.trains)
+    #         st.success("Delay injected to random train!")
+    # with col3:
+    #     if st.button("⚠️ Simulate Breakdown", use_container_width=True):
+    #         st.session_state.train_controller.simulate_breakdown(st.session_state.train_generator.trains)
+    #         st.error("Breakdown simulated!")
+    # with col4:
+    #     if st.button("🔄 Reset System", type="primary", use_container_width=True):
+    #         st.session_state.train_generator = TrainDataGenerator()
+    #         st.session_state.decisions_log = []
+    #         st.session_state.metrics_history = []
+    #         st.success("System reset!")
 
 
 def create_train_list_panel():
