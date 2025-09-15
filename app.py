@@ -17,18 +17,22 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
+from datetime import datetime, timedelta
+from zoneinfo import ZoneInfo   # ✅ add this
+
 # Initialize session state
 if 'train_generator' not in st.session_state:
     st.session_state.train_generator = TrainDataGenerator()
     st.session_state.network_map = NetworkMap()
     st.session_state.train_controller = TrainController()
-    st.session_state.last_update = datetime.now()
+    st.session_state.last_update = datetime.now(ZoneInfo("Asia/Kolkata"))  # ✅ IST aware
     st.session_state.decisions_log = []
     st.session_state.metrics_history = []
 
+
 def update_real_time_data():
     """Update real-time data if enough time has passed"""
-    current_time = datetime.now()
+    current_time = datetime.now(ZoneInfo("Asia/Kolkata"))
     if current_time - st.session_state.last_update > timedelta(seconds=3):
         st.session_state.train_generator.update_trains()
         st.session_state.last_update = current_time
