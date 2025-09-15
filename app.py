@@ -27,7 +27,7 @@ if 'train_generator' not in st.session_state:
     st.session_state.metrics_history = []
 
 from datetime import datetime, timedelta
-from zoneinfo import ZoneInfo  # ensures IST timezone
+from zoneinfo import ZoneInfo
 
 def update_real_time_data():
     """Update real-time data if enough time has passed"""
@@ -42,13 +42,14 @@ def update_real_time_data():
             st.session_state.train_generator.trains
         )
         st.session_state.metrics_history.append({
-            'timestamp': current_time.strftime("%H:%M:%S"),  # optional: show only time
+            'timestamp': current_time.strftime("%H:%M:%S"),
             'metrics': metrics
         })
         
-        # Keep only last 20 entries for performance
+        # Keep only last 20 entries
         if len(st.session_state.metrics_history) > 20:
             st.session_state.metrics_history = st.session_state.metrics_history[-20:]
+
 
 
 def create_top_bar():
