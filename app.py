@@ -36,7 +36,7 @@ from zoneinfo import ZoneInfo
 
 def update_real_time_data():
     """Update real-time data if enough time has passed"""
-    current_time = datetime.now(ZoneInfo("Asia/Kolkata"))
+    current_time = datetime.now
     
     if current_time - st.session_state.last_update > timedelta(seconds=3):
         st.session_state.train_generator.update_trains()
