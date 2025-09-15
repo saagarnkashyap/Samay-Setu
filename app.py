@@ -30,8 +30,7 @@ def update_real_time_data():
     """Update real-time data if enough time has passed"""
     from zoneinfo import ZoneInfo   # Python 3.9+
 # or: import pytz
-
-current_time = datetime.now(ZoneInfo("Asia/Kolkata"))
+    current_time = datetime.now(ZoneInfo("Asia/Kolkata"))
 
     if current_time - st.session_state.last_update > timedelta(seconds=3):
         st.session_state.train_generator.update_trains()
