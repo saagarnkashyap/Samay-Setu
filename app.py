@@ -183,6 +183,21 @@ def create_metrics_panel():
     else:
         st.info("No decisions recorded yet.")
 
+    # Manual Log Entry
+    st.markdown("### 📝 Manual Log Entry")
+    manual_action = st.text_input("Enter manual action or recommendation:")
+    if st.button("Log Manual Entry", key="manual_log"):
+        if manual_action:
+            st.session_state.decisions_log.append({
+                'timestamp': datetime.now(ZoneInfo("Asia/Kolkata")),
+                'action': manual_action,
+                'status': 'Applied'  # Assuming manual entries are always applied
+            })
+            st.success("Manual entry logged!")
+            st.rerun()
+        else:
+            st.warning("Please enter an action to log.")
+
 def main():
     """Main application function"""
     # Auto-refresh setup
