@@ -7,7 +7,7 @@ A comprehensive real-time railway traffic management system built with Streamlit
 ### Train Management
 - **Active Train Tracking**: Monitor all trains in the network
 - **Status Filtering**: Filter by train status (On Time, Delayed, Waiting, Rerouted)
-- **Type Filtering**: Filter by train type (Express, Passenger, Freight, etc.)
+- **Type Filtering**: Filter by train type (Express, Passenger, Freight, etc.) 
 - **Real-time Updates**: Live position and status updates
 
 ### Network Visualization
