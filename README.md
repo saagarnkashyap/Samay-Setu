@@ -4,25 +4,19 @@ A comprehensive real-time railway traffic management system built with Streamlit
 
 ## Features
 
-### 🎛️ System Controls
-- **Real-time Monitoring**: Live updates every 3 seconds
-- **Delay Injection**: Simulate train delays for testing
-- **Breakdown Simulation**: Test system response to train failures
-- **System Reset**: Clear all data and restart
-
-### 🚄 Train Management
+### Train Management
 - **Active Train Tracking**: Monitor all trains in the network
 - **Status Filtering**: Filter by train status (On Time, Delayed, Waiting, Rerouted)
 - **Type Filtering**: Filter by train type (Express, Passenger, Freight, etc.)
 - **Real-time Updates**: Live position and status updates
 
-### 🗺️ Network Visualization
+### Network Visualization
 - **Interactive Map**: Visual representation of Indian railway network
 - **Track Status**: Real-time track condition monitoring
 - **Station Markers**: Key railway stations across India
 - **Train Positions**: Live train location tracking
 
-### 📈 Performance Metrics
+### Performance Metrics
 - **Average Delay Tracking**: Monitor system-wide delays
 - **Throughput Analysis**: Trains per hour metrics
 - **Utilization Monitoring**: Track capacity usage
