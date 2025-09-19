@@ -1,4 +1,4 @@
-# Indian Railway Traffic Control Dashboard 🚆
+# Indian Railway Traffic Control Dashboard for Smart India Hackathon
 
 A comprehensive real-time railway traffic management system built with Streamlit, featuring AI-powered decision support for Indian railway operations.
 
